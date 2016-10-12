@@ -1,0 +1,24 @@
+{
+  "name": "sqlite101",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JameyMcAuliffe/sqlite101.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JameyMcAuliffe/sqlite101/issues"
+  },
+  "homepage": "https://github.com/JameyMcAuliffe/sqlite101#readme",
+  "dependencies": {
+    "cli-table": "^0.3.1",
+    "sqlite3": "^3.1.6"
+  }
+}
