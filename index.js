@@ -13,6 +13,7 @@ db.serialize(() => {
 	// 	, (err, customers) => {
 	// 		console.log(customers)
 	// 	})
+
 	// db.all(`
 	// 	SELECT FirstName || ' ' || LastName AS 'Name', CustomerId, Country FROM Customer
 	// 	WHERE Country IS 'Brazil'`
@@ -25,6 +26,7 @@ db.serialize(() => {
 	// 	, (err, { CustomerId, Name, Country }) => {
 	// 		console.log(`${CustomerId}: ${Name} (${Country})`)
 	// })
+
 	// db.each(`
 	// 	SELECT InvoiceId, FirstName || ' ' || LastName AS 'Name', InvoiceDate, BillingCountry
 	// 	FROM Invoice
@@ -38,6 +40,23 @@ db.serialize(() => {
 	// 		table.push([row.InvoiceId, row.Name, row.InvoiceDate, row.BillingCountry])
 	// 		console.log(table.toString())
 	// 	})
+
+	  db.all(`
+    SELECT FirstName || " " || LastName AS "Name",
+           InvoiceId,
+           InvoiceDate,
+           BillingCountry
+    FROM   Invoice
+    JOIN   Customer
+    ON     Invoice.CustomerId = Customer.CustomerId
+    WHERE  Country = "Brazil"
+  `, (err, invoices) => {
+    const head = ['InvoiceId', 'Name', 'InvoiceDate', 'BillingCountry']
+    const tbl = new cliTable({ head, style : { compact : true } })
+
+    tbl.push(...invoices.map(i => [i.InvoiceId, i.Name, i.InvoiceDate, i.BillingCountry]))
+    console.log(tbl.toString())
+  })
 
 	{
     // 4. Provide a query showing only the Employees who are Sales Agents.
