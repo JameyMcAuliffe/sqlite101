@@ -78,16 +78,19 @@ const db = new Database('db/Chinook_Sqlite.sqlite')
 // db.close()
 
 const knex = require('knex')({
-	client: 'sqlite3',
-  connection: {
-    filename: 'db/Chinook_Sqlite.sqlite'
-  },
-  useNullAsDefault: false
+	//client: 'sqlite3',
+	client: 'pg',
+	connection: 'postgres://localhost:5432/chinook',
+  // connection: {
+    //filename: 'db/Chinook_Sqlite.sqlite'
+    
+  // },
+  //useNullAsDefault: false
 })
 
 //Queries using knex
 // console.log('5) Provide a query showing a unique list of billing countries from the Invoice table.')
-// //knex.select('*').from('Invoice').then(console.log)
+//knex.select('*').from('Invoice').then(console.log)
 // knex('Invoice').distinct('BillingCountry').orderBy('BillingCountry').then(console.log)
 
 // console.log('6) Provide a query showing the invoices of customers who are from Brazil.')
@@ -102,18 +105,27 @@ const knex = require('knex')({
 // 	.orderBy('Customer.SupportRepId')
 // 	.then(console.log)
 
-console.log('8) Provide a query that shows the Invoice Total, Customer name, Country and Sale Agent name for all invoices and customers.')
-
+//postgres version, also works with sqlite3
+console.log(`7. Provide a query that shows the invoices associated with each sales agent. The resultant table should include the Sales Agent's full name.`)
 knex('Invoice')
-  .select(knex.raw(`Employee.FirstName || ' ' || Employee.LastName as SalesAgent`))
-  .select(knex.raw(`Customer.FirstName || ' ' || Customer.LastName as Customer`))
-  .select('Customer.Country')
-  .sum('Invoice.Total as Total')
+  .select(knex.raw(`"Employee"."FirstName" || ' ' || "Employee"."LastName" as SalesAgent`))
+  .select('Invoice.*')
   .join('Customer', 'Invoice.CustomerId', 'Customer.CustomerId')
   .join('Employee', 'SupportRepId', 'EmployeeId')
-  .groupBy('Customer.CustomerId')
-  .orderBy('Total', 'desc')
   .then(console.log)
+
+// console.log('8) Provide a query that shows the Invoice Total, Customer name, Country and Sale Agent name for all invoices and customers.')
+
+// knex('Invoice')
+//   .select(knex.raw(`Employee.FirstName || ' ' || Employee.LastName as SalesAgent`))
+//   .select(knex.raw(`Customer.FirstName || ' ' || Customer.LastName as Customer`))
+//   .select('Customer.Country')
+//   .sum('Invoice.Total as Total')
+//   .join('Customer', 'Invoice.CustomerId', 'Customer.CustomerId')
+//   .join('Employee', 'SupportRepId', 'EmployeeId')
+//   .groupBy('Customer.CustomerId')
+//   .orderBy('Total', 'desc')
+//   .then(console.log)
 
 // knex.sum('Invoice.Total as Total').select('Customer.FirstName as Customer', 'Employee.FirstName as Sales Agent', 'Invoice.BillingCountry')
 // .from('Employee')
@@ -121,6 +133,18 @@ knex('Invoice')
 // .join('Invoice', {'Customer.CustomerId': 'Invoice.CustomerId'})
 // .groupBy('Customer.CustomerId')
 // .then(console.log)
+
+//postgres version, also works with sqlite3
+knex('Invoice')
+  .select(knex.raw(`"Employee"."FirstName" || ' ' || "Employee"."LastName" as SalesAgent`))
+  .select(knex.raw(`"Customer"."FirstName" || ' ' || "Customer"."LastName" as Customer`))
+  .select('Customer.Country')
+  .sum('Invoice.Total as Total')
+  .join('Customer', 'Invoice.CustomerId', 'Customer.CustomerId')
+  .join('Employee', 'SupportRepId', 'EmployeeId')
+  .groupBy('Customer.CustomerId', 'Employee.EmployeeId')
+  .orderBy('Total', 'desc')
+  .then(console.log)
 
 knex.destroy()
 
