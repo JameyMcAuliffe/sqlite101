@@ -19,6 +19,8 @@
   "homepage": "https://github.com/JameyMcAuliffe/sqlite101#readme",
   "dependencies": {
     "cli-table": "^0.3.1",
+    "knex": "^0.12.5",
+    "pg": "^6.1.0",
     "sqlite3": "^3.1.6"
   }
 }
